@@ -4,12 +4,14 @@ import type { Creature, Rarity } from '../utils/creatureGenerator';
 import { RARITY_COLORS } from '../utils/creatureGenerator';
 import CreatureArt from './CreatureArt';
 
+
 interface Props {
   creature: Creature;
   showDelete?: boolean;
   onDelete?: (id: string) => void;
   compact?: boolean;
   loadingAI?: boolean;
+  cardRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 function StatBar({ label, value, icon }: { label: string; value: number; icon: React.ReactNode }) {
@@ -83,7 +85,7 @@ function Particles({ rarity }: { rarity: Rarity }) {
   return <div className="particles-container">{particles}</div>;
 }
 
-export default function CreatureCard({ creature, showDelete, onDelete, compact, loadingAI }: Props) {
+export default function CreatureCard({ creature, showDelete, onDelete, compact, loadingAI, cardRef }: Props) {
   const [flipped, setFlipped] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -122,7 +124,12 @@ export default function CreatureCard({ creature, showDelete, onDelete, compact, 
   }
 
   return (
+     <div
+      className={`creature-card-wrapper`}
+      style={{ display: 'flex', flexDirection: 'column' }}
+    >
     <div
+      ref={cardRef}
       className={`creature-card ${rarityClass}`}
       onMouseEnter={() => setFlipped(true)}
       onMouseLeave={() => setFlipped(false)}
@@ -185,6 +192,7 @@ export default function CreatureCard({ creature, showDelete, onDelete, compact, 
         )}
       </div>
 
+
       {/* Delete button */}
       {showDelete && (
         <button
@@ -195,6 +203,9 @@ export default function CreatureCard({ creature, showDelete, onDelete, compact, 
           <span>{confirmDelete ? 'Confirm?' : 'Delete'}</span>
         </button>
       )}
+
+      
+    </div> 
     </div>
   );
 }

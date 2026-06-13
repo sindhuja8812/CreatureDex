@@ -3,6 +3,7 @@ import { Dices, Save, Sparkles } from 'lucide-react';
 import type { Creature } from '../utils/creatureGenerator';
 import { generateCreature } from '../utils/creatureGenerator';
 import { saveCreature } from '../utils/storage';
+import { generateAIContent } from '../utils/aiGenerator';
 import CreatureCard from '../components/CreatureCard';
 
 export default function GeneratorPage({
@@ -15,13 +16,35 @@ export default function GeneratorPage({
   const [creature, setCreature] = useState<Creature | null>(null);
   const [saved, setSaved] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [loadingAI, setLoadingAI] = useState(false);
 
-  const handleGenerate = useCallback(() => {
+  const handleGenerate = useCallback(async () => {
     setGenerating(true);
     setSaved(false);
-    setTimeout(() => {
-      setCreature(generateCreature());
+
+    setTimeout(async () => {
+      const base = generateCreature();
+      setCreature({ ...base, taunt: '' });
       setGenerating(false);
+      setLoadingAI(true);
+
+      try {
+        const ai = await generateAIContent(
+          base.species,
+          base.rarity,
+          base.ability,
+          base.habitat
+        );
+        setCreature((prev) =>
+          prev ? { ...prev, lore: ai.lore, taunt: ai.taunt } : prev
+        );
+      } catch {
+        setCreature((prev) =>
+          prev ? { ...prev, taunt: 'My power is beyond your comprehension.' } : prev
+        );
+      } finally {
+        setLoadingAI(false);
+      }
     }, 400);
   }, []);
 
@@ -51,11 +74,11 @@ export default function GeneratorPage({
       <div className="flex justify-center mb-8">
         <button
           onClick={handleGenerate}
-          disabled={generating}
+          disabled={generating || loadingAI}
           className="generate-btn"
         >
           <Dices size={20} className={generating ? 'spin' : ''} />
-          <span>{generating ? 'Summoning...' : 'Generate Creature'}</span>
+          <span>{generating ? 'Summoning...' : loadingAI ? 'Writing lore...' : 'Generate Creature'}</span>
         </button>
       </div>
 
@@ -64,9 +87,9 @@ export default function GeneratorPage({
         {creature ? (
           <div className="card-wrapper">
             <div className={`card-reveal ${generating ? '' : 'show'}`}>
-              <CreatureCard creature={creature} />
+              <CreatureCard creature={creature} loadingAI={loadingAI} />
             </div>
-            {!saved && (
+            {!saved && !loadingAI && (
               <button onClick={handleSave} className="save-btn mt-4">
                 <Save size={16} />
                 <span>Save to Collection</span>

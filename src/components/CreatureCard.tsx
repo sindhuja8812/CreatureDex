@@ -9,6 +9,7 @@ interface Props {
   showDelete?: boolean;
   onDelete?: (id: string) => void;
   compact?: boolean;
+  loadingAI?: boolean;
 }
 
 function StatBar({ label, value, icon }: { label: string; value: number; icon: React.ReactNode }) {
@@ -82,7 +83,7 @@ function Particles({ rarity }: { rarity: Rarity }) {
   return <div className="particles-container">{particles}</div>;
 }
 
-export default function CreatureCard({ creature, showDelete, onDelete, compact }: Props) {
+export default function CreatureCard({ creature, showDelete, onDelete, compact, loadingAI }: Props) {
   const [flipped, setFlipped] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -168,9 +169,20 @@ export default function CreatureCard({ creature, showDelete, onDelete, compact }
         <div className={`card-lore ${flipped ? 'visible' : ''}`}>
           <div className="flex items-start gap-1 text-xs">
             <ScrollText size={10} className="text-gray-400 flex-shrink-0 mt-0.5" />
-            <p className="text-gray-400 italic leading-relaxed">{creature.lore}</p>
+            {loadingAI ? (
+              <p className="text-gray-500 italic animate-pulse">Conjuring lore...</p>
+            ) : (
+              <p className="text-gray-400 italic leading-relaxed">{creature.lore}</p>
+            )}
           </div>
         </div>
+
+        {/* Battle Taunt */}
+        {creature.taunt && !loadingAI && (
+          <div className="mt-2 px-2 py-1 rounded-md bg-amber-400/10 border border-amber-400/20">
+            <p className="text-amber-300 text-xs italic text-center">"{creature.taunt}"</p>
+          </div>
+        )}
       </div>
 
       {/* Delete button */}

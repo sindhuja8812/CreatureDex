@@ -24,6 +24,7 @@ export interface Creature {
   ability: string;
   habitat: string;
   lore: string;
+  taunt: string;
   createdAt: number;
 }
 
@@ -193,6 +194,7 @@ export function generateCreature(): Creature {
     ability: pick(abilities),
     habitat: pick(habitats),
     lore: generateLore(species),
+    taunt: '',
     createdAt: Date.now(),
   };
 }

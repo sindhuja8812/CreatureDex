@@ -102,7 +102,7 @@ export default function CreatureCard({ creature, showDelete, onDelete, compact }
       <div className={`creature-card ${rarityClass} compact-card`}>
         <Particles rarity={creature.rarity} />
         <div className="compact-art-area">
-          <CreatureArt species={creature.species} />
+          <CreatureArt species={creature.species} rarity={creature.rarity} />
         </div>
         <div className="compact-info">
           <p className="text-xs font-bold text-gray-200 truncate">{creature.name}</p>
@@ -131,7 +131,7 @@ export default function CreatureCard({ creature, showDelete, onDelete, compact }
       {/* Art area */}
       <div className="card-art-area">
         <div className="floating-creature">
-          <CreatureArt species={creature.species} className="w-full h-full" />
+          <CreatureArt species={creature.species} rarity={creature.rarity} className="w-full h-full" />
         </div>
       </div>
 

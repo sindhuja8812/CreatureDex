@@ -4,6 +4,7 @@ import type { Creature, Species, Rarity } from '../utils/creatureGenerator';
 import { ALL_SPECIES, ALL_RARITIES, RARITY_ORDER } from '../utils/creatureGenerator';
 import { deleteCreature } from '../utils/storage';
 import CreatureCard from '../components/CreatureCard';
+import CreatureModal from '../components/CreatureModal';
 
 interface Props {
   collection: Creature[];
@@ -18,6 +19,7 @@ export default function CollectionPage({ collection, onUpdate }: Props) {
   const [rarityFilter, setRarityFilter] = useState<Rarity | ''>('');
   const [sortMode, setSortMode] = useState<SortMode>('newest');
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedCreature, setSelectedCreature] = useState<Creature | null>(null);
 
   const filtered = useMemo(() => {
     let result = [...collection];
@@ -157,13 +159,14 @@ export default function CollectionPage({ collection, onUpdate }: Props) {
       {filtered.length > 0 ? (
         <div className="collection-grid">
           {filtered.map((creature) => (
-            <CreatureCard
-              key={creature.id}
-              creature={creature}
-              showDelete
-              onDelete={handleDelete}
-              compact
-            />
+            <div key={creature.id} onClick={() => setSelectedCreature(creature)} style={{ cursor: 'pointer' }}>
+              <CreatureCard
+                creature={creature}
+                showDelete
+                onDelete={handleDelete}
+                compact
+              />
+            </div>
           ))}
         </div>
       ) : (
@@ -175,6 +178,13 @@ export default function CollectionPage({ collection, onUpdate }: Props) {
               : 'No creatures match your filters.'}
           </p>
         </div>
+      )}
+      {/* Modal */}
+      {selectedCreature && (
+        <CreatureModal
+          creature={selectedCreature}
+          onClose={() => setSelectedCreature(null)}
+        />
       )}
     </div>
   );

@@ -71,7 +71,7 @@ export default function GeneratorPage({
   return (
     <div className="generator-page">
       {/* Header */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-4">
         <h1 className="text-3xl md:text-4xl font-bold mb-2">
           <span className="text-amber-400">Creature</span>
           <span className="text-gray-200">Dex</span>
@@ -84,7 +84,7 @@ export default function GeneratorPage({
       </div>
 
       {/* Generate button */}
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mb-4">
         <button onClick={handleGenerate} disabled={generating || loadingAI} className="generate-btn">
           <Dices size={20} className={generating ? 'spin' : ''} />
           <span>{generating ? 'Summoning...' : loadingAI ? 'Writing lore...' : 'Generate Creature'}</span>

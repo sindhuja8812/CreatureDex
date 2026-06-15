@@ -159,7 +159,14 @@ export default function CollectionPage({ collection, onUpdate }: Props) {
       {filtered.length > 0 ? (
         <div className="collection-grid">
           {filtered.map((creature) => (
-            <div key={creature.id} onClick={() => setSelectedCreature(creature)} style={{ cursor: 'pointer' }}>
+            <div
+              key={creature.id}
+              onClick={(e) => {
+                if ((e.target as HTMLElement).closest('button')) return;
+                setSelectedCreature(creature);
+              }}
+              style={{ cursor: 'pointer' }}
+            >
               <CreatureCard
                 creature={creature}
                 showDelete
